@@ -62,17 +62,22 @@ def parse_playerctl(txt):
 def get_meta() -> dict:
     """Get metadata using playerctl."""
     try:
-        metadata_raw = subprocess.check_output(f"playerctl metadata", shell=True, stderr=subprocess.STDOUT).decode('utf-8')
+        status = subprocess.check_output(f"playerctl status", shell=True).decode('utf-8').strip()
     except subprocess.CalledProcessError:
         # No players
         return None
 
+    if status == "Stopped":
+        return {
+            "status": "Stopped",
+        }
+
+    metadata_raw = subprocess.check_output(f"playerctl metadata", shell=True, stderr=subprocess.STDOUT).decode('utf-8')
     meta = parse_playerctl(metadata_raw)
 
-    status = subprocess.check_output(f"playerctl status", shell=True).decode('utf-8')
-    meta["status"] = status.strip()
-
     position = subprocess.check_output(f"playerctl position", shell=True).decode('utf-8')
+
+    meta["status"] = status.strip()
     meta["position"] = position.strip()
 
     return meta
@@ -103,6 +108,8 @@ def main():
     if meta is None:
         # Spotify is not running
         print_bar_and_colour(f"down", PlayingState.DOWN)
+    elif meta["status"] == "Stopped":
+        print_bar_and_colour(f"stopped", PlayingState.DOWN)
     else:
         title = meta.get("xesam:title", None)
         artist = meta.get("xesam:artist", None)
