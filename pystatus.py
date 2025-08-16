@@ -31,9 +31,9 @@ SHOW_PROGRESS = True # default True
 
 # The character to use at the start of the widget. Defaults to FontAwesome Spotify logo character.
 START_CHAR = {
-    PlayingState.DEFAULT: "… ",
-    PlayingState.PLAYING: "𝅘𝅥𝅮 ", 
-    PlayingState.PAUSED: "𝄽 ",
+    PlayingState.DEFAULT: "…  ",
+    PlayingState.PLAYING: "♫  ", 
+    PlayingState.PAUSED: "⏸  ",
 }
 
 # Maximum length of artist + song string. If set to None, no maximum.
